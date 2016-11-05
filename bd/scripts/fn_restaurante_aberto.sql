@@ -1,0 +1,18 @@
+-- Verifica se o restaurante está em funcionamento
+-- Retorna 1 - Aberto ou 0 - Fechado
+CREATE OR REPLACE FUNCTION RESTAURANTE_ABERTO(
+  HORA_ATUAL VARCHAR2
+)
+RETURN NUMBER IS
+  V_HORA_ATUAL DATE;
+  V_ABERTO NUMBER(1) := 0;
+BEGIN
+  V_HORA_ATUAL := TO_DATE(HORA_ATUAL, 'DD/MM/YYYY HH24:MI');
+  IF (TO_CHAR(V_HORA_ATUAL, 'D') <> '2') THEN
+    IF ((TO_CHAR(V_HORA_ATUAL, 'HH24:MI') > '18:59') AND (TO_CHAR(V_HORA_ATUAL, 'HH24:MI') < '24:00')) THEN
+      V_ABERTO := 1;
+    END IF;
+  END IF;
+  RETURN V_ABERTO;
+END;
+/
