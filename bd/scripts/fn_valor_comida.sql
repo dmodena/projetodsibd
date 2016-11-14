@@ -1,3 +1,4 @@
+--Função para calcular o valor total das comidas
 CREATE OR REPLACE FUNCTION VALOR_COMIDA(
   I_COD_COMIDA COMIDAS.CODIGO%TYPE
 )

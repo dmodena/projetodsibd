@@ -1,3 +1,4 @@
+--Função para calcular o valor total das bebidas preparadas
 CREATE OR REPLACE FUNCTION VALOR_BEBIDA(
   I_COD_BEBIDA BEBIDAS.CODIGO%TYPE
 )
