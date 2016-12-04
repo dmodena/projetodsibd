@@ -1,6 +1,6 @@
--- Retorna o número do dia da semana
+-- Retorna o nÃºmero do dia da semana
 --  sendo Domingo o primeiro dia (1)
---  e Sábado o último dia (7)
+--  e SÃ¡bado o Ãºltimo dia (7)
 CREATE OR REPLACE FUNCTION SEMANA_NUMERO(
   DIA_ATUAL DATE
 )
