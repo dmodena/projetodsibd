@@ -1,6 +1,6 @@
 -- Verifica se o restaurante está em funcionamento
 -- Recebe DATE Dia e horário para verificar funcionamento
--- Retorna CHAR 1 - Aberto ou 0 - Fechado
+-- Retorna NUMBER 1 - Aberto ou 0 - Fechado
 CREATE OR REPLACE FUNCTION RESTAURANTE_ABERTO(
   HORA_CONSULTA DATE
 )
