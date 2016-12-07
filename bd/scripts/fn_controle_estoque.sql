@@ -3,8 +3,12 @@ CREATE OR REPLACE PROCEDURE CONTROLE_ESTOQUE(
   COD_ITEM ITENS.CODIGO%TYPE,
   QTD NUMBER
 )IS
+  COD_E NUMBER;
+  QTD_E NUMBER;
   QTD_ESTOQUE NUMBER;
+  QUANTIDADE_ACIMA EXCEPTION;
   QUANTIDADE_INDISPONIVEL EXCEPTION;
+  QUANTIDADE_NO_FINAL EXCEPTION;
 BEGIN
   SELECT QUANTIDADE INTO QTD_ESTOQUE
   FROM ESTOQUE E
@@ -12,34 +16,51 @@ BEGIN
     ON E.CODIGO = I.COD_ESTOQUE
   WHERE I.CODIGO = COD_ITEM;
   
-  IF (QTD > QTD_ESTOQUE) THEN
+  IF (QTD_ESTOQUE = 0) THEN
     RAISE QUANTIDADE_INDISPONIVEL;
-  ELSE 
+  ELSIF (QTD > QTD_ESTOQUE) THEN
+    RAISE QUANTIDADE_ACIMA;
+  ELSIF (QTD_ESTOQUE > 0) AND (QTD_ESTOQUE <= 5) THEN
+    RAISE QUANTIDADE_NO_FINAL;
+  ELSE    
     UPDATE ESTOQUE
     SET QUANTIDADE = QUANTIDADE - QTD
     WHERE CODIGO = COD_ITEM;
-    
-    IF (0 > QTD_ESTOQUE) AND (QTD_ESTOQUE <= 5) THEN
-      DBMS_OUTPUT.PUT_LINE('O item usado está com últimas unidades no estoque.
-        Favor fazer reposição.');      
-      
-    ELSIF (QTD_ESTOQUE = 0) THEN
-      DBMS_OUTPUT.PUT_LINE('Últimas unidades do item escolhido foram usadas. 
-        Favor fazer reposição.');
-    END IF;
   END IF;
-  
   COMMIT;
 
 EXCEPTION
   WHEN QUANTIDADE_INDISPONIVEL THEN
     DBMS_OUTPUT.PUT_LINE('Não tem a quantidade desejada no estoque.');
+    
+    INSERT INTO ITENS_EM_FALTA
+    VALUES(QTD_ESTOQUE, COD_ITEM);
+    
+  WHEN QUANTIDADE_ACIMA THEN
+    DBMS_OUTPUT.PUT_LINE('A quantidade pedida está acima da quantidade disponível no estoque');
+    
+  WHEN QUANTIDADE_NO_FINAL THEN
+    UPDATE ESTOQUE
+    SET QUANTIDADE = QUANTIDADE - QTD
+    WHERE CODIGO = COD_ITEM;
+    
+    DBMS_OUTPUT.PUT_LINE('O item possui 5 ou menos unidades no estoque.');
+    
+    INSERT INTO ITENS_EM_FALTA
+    VALUES(QTD_ESTOQUE, COD_ITEM);
 END;
 /
 
 set serveroutput on;
 
 begin 
-  controle_estoque(1, 2);
+  controle_estoque(1, 3);
 end;
 /
+
+select * from itens;
+select * from estoque;
+
+UPDATE ESTOQUE
+SET QUANTIDADE = 1
+WHERE CODIGO = 1;
