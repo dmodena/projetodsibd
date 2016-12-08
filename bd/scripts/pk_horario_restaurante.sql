@@ -1,3 +1,4 @@
+-- Gerencia o horário de funcionamento do Restaurante
 CREATE OR REPLACE PACKAGE HORARIO_RESTAURANTE
 AS
   FUNCTION RESTAURANTE_ABERTO(
